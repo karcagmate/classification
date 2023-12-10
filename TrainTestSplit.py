@@ -14,6 +14,7 @@ from sklearn.decomposition import PCA
 class Split:
     def __init__(self,data) -> None:
         self.data=data
+        self.models=None
     #split to X y
    
     def split_to_x_y(self):
@@ -47,6 +48,7 @@ from imblearn.over_sampling import SMOTE
 from sklearn.svm import SVC
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
+import streamlit as st
     
 class ModelAnalysis:
     def __init__(self,X_train,y_train,X_test,y_test) -> None:
@@ -61,33 +63,34 @@ class ModelAnalysis:
        fpr = dict()
        tpr = dict()
        roc_auc = dict()
+       
        for i in range(2):
          fpr[i], tpr[i], _ = roc_curve(y_test, y_pred[:, i])
          roc_auc[i] = auc(fpr[i], tpr[i])
-
-       plt.figure()
+       
+       fig,ax=plt.subplots()
        lw = 2
        for i in range(2):
-         plt.plot(
+         ax.plot(
          fpr[i],
          tpr[i],
          lw=lw,
          label=f"{m_name} ROC curve (area = %0.2f)" % roc_auc[i],
           )
-       plt.plot([0, 1], [0, 1], color="navy", lw=lw, linestyle="--")
-       plt.xlim([0.0, 1.0])
-       plt.ylim([0.0, 1.05])
-       plt.xlabel("False Positive Rate")
-       plt.ylabel("True Positive Rate")
-       plt.title("Receiver operating characteristic example")
-       plt.legend(loc="lower right")
-       plt.show()
+       ax.plot([0, 1], [0, 1], color="navy", lw=lw, linestyle="--")
+       ax.set_xlim([0.0, 1.0])
+       ax.set_ylim([0.0, 1.05])
+       ax.set_xlabel("False Positive Rate")
+       ax.set_ylabel("True Positive Rate")
+       ax.set_title("Receiver operating characteristic example")
+       ax.legend(loc="lower right")
+       st.pyplot(fig)
        #return roc_auc[0]
-
+    
 
     
     def summarize_models(self):
-        models=[
+        self.models=[
             ['Logistic Regresion',BaggingClassifier(LogisticRegression(), n_estimators=100,random_state=20 )],
             ['Decision Tree Classifier',BaggingClassifier(DecisionTreeClassifier(),n_estimators=100,random_state=20)],
             ['Random Forest Classifier',RandomForestClassifier(n_estimators=100)],
@@ -98,7 +101,7 @@ class ModelAnalysis:
         result=[]
 
         
-        for model in models:
+        for model in self.models:
             m_name=model[0]
             m_model=model[1]
             m_model.fit(self.X_train,self.y_train)
@@ -109,7 +112,7 @@ class ModelAnalysis:
             result.append({'Model': m_name , 
                            'Accuracy':accuracy,
                            ' ROC_AUC score':roc_auc_score(self.y_test,y_pred) })
-            self.roc_auc_plot(m_name,self.y_test,y_pred_proba)
+            #self.roc_auc_plot(m_name,self.y_test,y_pred_proba)
             
         result_df=pd.DataFrame(result)
         return result_df    

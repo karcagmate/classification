@@ -14,7 +14,9 @@ class DataCleaning:
         return self .data
     
     #drop unnecessary columns
-    def drop_columns(self,cols):
+    def drop_columns(self):
+        cols=['Patient ID','Country','Continent',
+              'Hemisphere','Income','Physical Activity Days Per Week']
         self.data=self.data.drop(cols,axis=1)
         return self.data
     #splitting Blood pressure into systolicand diastolic
@@ -33,10 +35,12 @@ class DataCleaning:
      #non numeric cols
      data_nonnumeric=self.data.select_dtypes(exclude=[np.number])
      nonnumeric_cols=data_nonnumeric.columns.values
-     print("Numeric Columns")
-     print(numeric_cols)
-     print("\nNon-Numeric Columns")
-     print(nonnumeric_cols)
+     message=f"\nNumeric Columns:\n {numeric_cols}  \n Non Numeric Columns:\n{nonnumeric_cols}"
+     #print("Numeric Columns")
+     #print(numeric_cols)
+     #print("\nNon-Numeric Columns")
+     #print(nonnumeric_cols)
+     return message
     #handling missing values
     def missing_values(self):
      j=0
@@ -59,12 +63,16 @@ class DataCleaning:
      else:          #nincs üres érték az adatbázisban
          print("No Missing Values")
     def searching_duplicates(self):
+       message=""
        search=self.data.duplicated()
        duplicates=search[search==True]
        if len(duplicates)>0:
-           print("Duplicate entries found")
+           message="Duplicate entries found"
+           #print("Duplicate entries found")
        else:
-          print("There are no duplicate entries")
+          message="No duplicate entries found"
+          #print("There are no duplicate entries")
+       return message
         #convert into numeric values
     def to_numeric(self,column):
        self.data[column]=pd.to_numeric(self.data[column])
@@ -81,39 +89,46 @@ class DataCleaning:
        return self.data
     
    #searching for outlier vallues
-    def detect_outliers(self):
+    def detect_outliers(self,selected_columns):
      #IQR=Q3-Q1
      #Lower Bound = Q1 - 1.5 * IQR 
      #Upper Bound = Q3 + 1.5 * IQR  
-     self.data.Age.plot(kind='box',figsize=(12,8))
-     plt.show()
-     self.data.Cholesterol.plot(kind='box',figsize=(12,8))
-     plt.show()
+     
+        self.data[selected_columns].plot(kind='box',figsize=(12,8))
+        #plt.show()
+     #self.data.Age.plot(kind='box',figsize=(12,8))
+     #plt.show()
+     #self.data.Cholesterol.plot(kind='box',figsize=(12,8))
+     #plt.show()
      #self.data.Income.plot(kind='box',figsize=(12,8))
      #plt.show()
-     self.data.BMI.plot(kind='box',figsize=(12,8))
-     plt.show()
-     self.data.Systolic.plot(kind='box',figsize=(12,8))
-     plt.show()
-     self.data.Diastolic.plot(kind='box',figsize=(12,8))
-     plt.show()
-     self.data.Triglycerides.plot(kind='box',figsize=(12,8))
-     plt.show()
+     #self.data.BMI.plot(kind='box',figsize=(12,8))
+     #plt.show()
+     #self.data.Systolic.plot(kind='box',figsize=(12,8))
+     #plt.show()
+     #self.data.Diastolic.plot(kind='box',figsize=(12,8))
+     #plt.show()
+     #self.data.Triglycerides.plot(kind='box',figsize=(12,8))
+     #plt.show()
+    def summarise_cleaning(self):
+       
+       self.drop_columns()
+       self.split()
+       self.to_numeric('Systolic')
+       self.to_numeric('Diastolic')
+       self.label_encoding()
+      
+       
 
    
 
     
-import streamlit as st
-from DataCleaning import DataCleaning
 
-st.set_page_config(page_title="Dataframe",page_icon="📊")
-st.markdown("#Dataframe")
-st.sidebar.header("Dataframe")
-dc=DataCleaning()
-#load original data
-dc.read_csv()
-st.subheader("Original Data")
-st.write(dc.data)
+   
+   
+
+
+
 
      
      
