@@ -90,7 +90,7 @@ class ModelAnalysis:
 
     
     def summarize_models(self):
-        self.models=[
+        models=[
             ['Logistic Regresion',BaggingClassifier(LogisticRegression(), n_estimators=100,random_state=20 )],
             ['Decision Tree Classifier',BaggingClassifier(DecisionTreeClassifier(),n_estimators=100,random_state=20)],
             ['Random Forest Classifier',RandomForestClassifier(n_estimators=100)],
@@ -101,7 +101,7 @@ class ModelAnalysis:
         result=[]
 
         
-        for model in self.models:
+        for model in models:
             m_name=model[0]
             m_model=model[1]
             m_model.fit(self.X_train,self.y_train)
@@ -115,7 +115,7 @@ class ModelAnalysis:
             #self.roc_auc_plot(m_name,self.y_test,y_pred_proba)
             
         result_df=pd.DataFrame(result)
-        return result_df    
+        return result_df,models    
 
         
  
