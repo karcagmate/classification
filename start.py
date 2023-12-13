@@ -6,4 +6,12 @@ st.set_page_config(
     
 )
 st.write("Welcome!")
-st.sidebar.success("select a demo.")
+#st.sidebar.success("select a demo.")
+
+
+if st.button("Links"):
+    link="https://www.kaggle.com/datasets/iamsouravbanerjee/heart-attack-prediction-dataset"
+    st.write(f"Dataset:\n {link}")
+    glink="https://github.com/karcagmate/classification"
+    st.write(f"\n\nGithub Repo:\n{glink}\n")
+    

@@ -6,6 +6,7 @@ from TrainTestSplit import Split
 from DataCleaning import DataCleaning
 from sklearn.preprocessing import LabelEncoder
 import numpy as np
+st.set_page_config(page_title="Heart Attack Prediction",page_icon="❤️")
 dc=DataCleaning()
 def load_data():
  # data=dc.data
@@ -17,31 +18,32 @@ def load_data():
   dc.label_encoding()
   return dc.data
 tts=Split(load_data())
-@st.cache_data
+
 def split():
   X,y=tts.split_to_x_y()
   X_scaled,y_rescaled=tts.rescale(X,y)
-  X_train,X_test,y_train,y_test=tts.split(X_scaled,y_rescaled)
+  X_train,X_test,y_train,y_test=tts.split(X,y)
   return X_train,y_train,X_test,y_test
+
+
 X_train,y_train,X_test,y_test=split()
 model=BaggingClassifier(DecisionTreeClassifier(),n_estimators=100,random_state=20)
-@st.cache_resource
-def fit_model(X_train,y_train):
- st.write(X_train)
 
+def fit_model(X_train,y_train):
+ 
  model.fit(X_train,y_train)
 def predict_risk(featrues):
     fit_model(X_train,y_train)
-    x=list(featrues.values)
-    x=np.array(x)
-    st.write(x)
-    st.write(x.shape)
-    model.predict(x)
-    prediction=model.predict_proba(featrues)[:,1]
+    x=featrues.values
+   # x=np.array(x)
+    #st.write( model.predict(x))
+    prediction=model.predict_proba(x)[:,1]
     return prediction
+    
+
 
 def main():
-    st.title('Heart Attack Risk Prediction App')
+    st.title('Heart Attack Risk Prediction')
     sex_mapping = {'Male': 1, 'Female': 0}
     diet_mapping={'Unhealthy':0,'Average':1,'Healthy':2}
     yes_no_mappping={'Yes':1,'No':0}
@@ -59,7 +61,7 @@ def main():
     previousheartproblems=st.radio('Previous Heart Problems',['Yes','No'])
     medicationuse=st.radio('Medication Use',['Yes','No'])
     stresslevel=st.slider('Stress Level',0,10,5)
-    sedentaryhoursperday=st.slider('Sedentary Hours Per Day',0,40,10)
+    sedentaryhoursperday=st.slider('Sedentary Hours Per Day',0,18,10)
     bmi=st.slider('BMI',18,40,25)
     triglycerides=st.slider('Triglycerides',150,800,300)
     sleephoursperday=st.slider('Sleep Hours Per Day',3,12,8)
@@ -88,43 +90,7 @@ def main():
         "Systolic":[systolic],
         "Diastolic":[diastolic]
     })
-    if st.sidebar.button('Predict'):
-        
-       # data_objects=user_input.select_dtypes(include=['object'])
-       # for columns in data_objects:
-        #   if columns=='Diet':
-         #     if user_input[columns]=='Unhealthy':
-          #       user_input[columns]=0
-           #   elif   user_input[columns]=='Average':
-            #     user_input[columns]=1
-             # else:
-              #   user_input[columns]=2
-              #data['Sex']=data['Sex'].replace({'Female':0,'Male':1})
-              #user_input[columns]=user_input[columns].replace({'Unhealthy':0,'Average':1,'Healthy':2})
-          # elif columns=='Sex':
-           #   if user_input[columns]=='Female':
-            #     user_input[columns]=0
-             # else:
-              #   user_input[columns]=1
-              #user_input[columns]=user_input[columns].replace({'Male':1,'Female':0})
-          # else:
-           #   if user_input[columns]=='No':
-              #   user_input[columns]=0
-            #  else:
-             #    user_input[columns]=1
-              #user_input[columns]=user_input[columns].replace
-               #({'Yes':1,'No':0})
-         
-               
-           #user_input[columns]=le.fit_transform(user_input[columns])
-       # st.write(user_input.dtypes)
-       # st.write(user_input.describe())
-       # fit_model()
-       
-        st.write(user_input.dtypes)
-        st.write(user_input)
-       
-
+    if st.button('Predict'):
         predicion=predict_risk(user_input)
         st.write(f'Predicted Heart attack risk:{predicion}')
 

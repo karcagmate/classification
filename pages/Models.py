@@ -3,6 +3,7 @@ from TrainTestSplit import ModelAnalysis
 from DataCleaning import DataCleaning
 import streamlit as st
 import matplotlib.pyplot as plt
+st.set_page_config(page_title="Models",page_icon="📊")
 dc=DataCleaning()
 @st.cache_data
 def load_data():
