@@ -1,5 +1,7 @@
 import streamlit as st
 from DataCleaning import DataCleaning
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 st.set_page_config(page_title="Data preview",page_icon="📊")
 
