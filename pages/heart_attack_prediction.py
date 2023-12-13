@@ -4,7 +4,7 @@ import streamlit as st
 import pandas as pd
 from TrainTestSplit import Split
 from DataCleaning import DataCleaning
-from sklearn.preprocessing import LabelEncoder
+
 import numpy as np
 st.set_page_config(page_title="Heart Attack Prediction",page_icon="❤️")
 dc=DataCleaning()
