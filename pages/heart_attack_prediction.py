@@ -45,7 +45,7 @@ def predict_risk(featrues):
 def main():
     st.title('Heart Attack Risk Prediction')
     sex_mapping = {'Male': 1, 'Female': 0}
-    diet_mapping={'Unhealthy':0,'Average':1,'Healthy':2}
+    diet_mapping={'Unhealthy':1,'Average':0,'Healthy':2}
     yes_no_mappping={'Yes':1,'No':0}
     age=st.slider('Age',18,100,25)
     sex=st.radio('Sex',['Male','Female'])
